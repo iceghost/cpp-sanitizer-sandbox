@@ -1,7 +1,7 @@
 CXX=clang++-17
 CXXFLAGS=-g -stdlib=libc++ -nostdinc++ -Iinclude/c++/v1 -Llib -fsanitize=memory,undefined
 
-.PHONY: run main libc++
+.PHONY: run main clang++-17 libc++
 
 main: knight2.cpp main.cpp
 	$(CXX) $(CXXFLAGS) $? -o $@
@@ -9,7 +9,13 @@ main: knight2.cpp main.cpp
 run:
 	LD_LIBRARY_PATH=lib ./main
 
-libc++:
+clang++-17:
+	wget https://apt.llvm.org/llvm.sh
+	chmod +x llvm.sh
+	sudo ./llvm.sh 17
+	rm llvm.sh
+
+libc++: clang++-17
 	mkdir -p llvm-project/build
 	cmake -GNinja -Sllvm-project/runtimes -Bllvm-project/build \
 		-DCMAKE_BUILD_TYPE=Release \
